@@ -10,9 +10,9 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class Lox {
-    //> had-error
+    private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
-    //< had-error
+    static boolean hadRuntimeError = false;
 
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
@@ -25,16 +25,14 @@ public class Lox {
         }
     }
 
-    // Reads a file and executes it.
     public static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
 
-        // Indicate an error in the exit code.
         if (hadError) System.exit(65);
+        if (hadRuntimeError) System.exit(70);
     }
 
-    // Reads a line of input from the user on the command line and returns the result.
     public static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
@@ -49,7 +47,6 @@ public class Lox {
     }
 
     // Runs the program once the readLine() function returns null.
-    // * Still don't know why the "Expr" type cannot be resolved to a type.
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
@@ -57,12 +54,11 @@ public class Lox {
         Parser parser = new Parser(tokens);
         Expr expression = parser.parse();
 
-        // Stop if there was a syntax error.
         if (hadError) return;
-        System.out.println((new AstPrinter().print(expression)));
+        
+        interpreter.interpret(expression);
     }
 
-    // Error handling.
     static void error(int line, String message) {
         report(line, "", message);
     }
@@ -72,12 +68,16 @@ public class Lox {
         hadError = true;
     }
 
-    // Reports the location of an error.
     static void error(Token token, String message) {
         if (token.type == TokenType.EOF) {
             report(token.line, " at end", message);
         } else {
             report(token.line, " at '" + token.lexeme + "'", message);
         }
+    }
+
+    static void runtimeError(RuntimeError error) {
+        System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
+        hadRuntimeError = true;
     }
 }
