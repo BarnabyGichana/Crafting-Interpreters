@@ -59,7 +59,7 @@ public class Interpreter implements Expr.Visistor<Object> {
 
         if (object instanceof Double) {
             String text = object.toString();
-            if (text.endswith(".0")) {
+            if (text.endsWith(".0")) {
                 text = text.substring(0, text.length() - 2);
             }
             return text;

@@ -1,11 +1,3 @@
-// GenerateAst is a tiny command-line app that genrates a file named "Expr.java" in the current directory.
-/*  Note!
- *  
- *  An actual scripting language would be a better fit for this than Java, but the author of the book
- *  is trying not to throw too many languages at the reader.
- */
-
-
 package com.craftinginterpreters.tool;
 
 import java.io.IOException;
@@ -21,7 +13,7 @@ public class GenerateAst {
         }
         String outputDir = args[0];
         defineAst(outputDir, "Expr", Arrays.asList(
-            "Binary     : Expr left, Token opertor, Expr right",
+            "Binary     : Expr left, Token operator, Expr right",
             "Grouping   : Expr expression",
             "Literal    : Object value",
             "Unary      : Token operator, Expr right"
@@ -55,17 +47,16 @@ public class GenerateAst {
         writer.close();
     }
 
-    private static void defineVisitor(
-        PrintWriter writer, String baseName, List<String> types) {
-            writer.println("  interface Visitor<R> {");
-            
-            for (String type : types) {
-                String typeName = type.split(":")[0].trim();
-                writer.println("    R visit" + typeName + baseName + "(" + typeName + " " + baseName.toLowerCase() + ");");
-            }
-
-            writer.println("  }");
+    private static void defineVisitor(PrintWriter writer, String baseName, List<String> types) {
+        writer.println("  interface Visitor<R> {");
+        
+        for (String type : types) {
+            String typeName = type.split(":")[0].trim();
+            writer.println("    R visit" + typeName + baseName + "(" + typeName + " " + baseName.toLowerCase() + ");");
         }
+
+        writer.println("  }");
+    }
 
     private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
         writer.println("  static class " + className + " extends " + baseName + " {");
@@ -73,7 +64,7 @@ public class GenerateAst {
         // Constructor.
         writer.println("    " + className + "(" + fieldList + ") {");
 
-        // Store paramters in fields.
+        // Store parameters in fields.
         String[] fields = fieldList.split(", ");
         for (String field : fields) {
             String name = field.split(" ")[1];
