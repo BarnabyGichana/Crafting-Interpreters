@@ -1,0 +1,14 @@
+## How to use this jLox interpreter on an MS Windows machine:
+#   Step 1: Open your terminal of choice and cd to the directory which contains this project
+#   Step 2: Run the following commands in cmd to compile the .java files:
+            $ javac com\craftinginterpreters\tool\*.java
+            $ javac com\craftinginterpreters\lox\*.java
+#   Step 3: Run the following command to start the jLox REPL:
+            $ java com.craftinginterpreters.lox.Lox
+#
+# You may now enter the commands that are listed below, or similar ones, into the terminal and voila!
+# You're running jLox.
+
+print "kilo";
+print true;
+print 9 + 10;
